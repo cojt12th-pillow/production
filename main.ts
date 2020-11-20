@@ -1,7 +1,5 @@
 const TIMES_LIMIT = 10
-let continuesAlerm = false
-let activitySuccessCount = 0
-const activityFunctions = [shakeActivityX, shakeActivityY, shakeActivityZ]
+const activityFunctions: (() => void)[] = [shakeActivityX, shakeActivityY, shakeActivityZ]
 
 // utils
 function getRandomInt(max: number): number {
@@ -15,14 +13,11 @@ input.onButtonPressed(Button.A, function () {
 
 // alerms
 function startAlermActivity () {
-  continuesAlerm = true
   // 音を鳴らしたりする
   runAlerm()
   // アクティビティをランダムに選択
   const activity = activityFunctions[getRandomInt(activityFunctions.length)]
-  while (continuesAlerm) {
-    continuesAlerm = activity()
-  }
+  activity()
   // アラームを止める
   stopAlerm()
 }
@@ -46,25 +41,33 @@ function shakeActivityZ () {
   shakeActivity('z')
 }
 
-function shakeActivity (direction: 'x' | 'y' | 'z') {
+type TDirection = 'x' | 'y' | 'z'
+
+// 10回加速度の変化が見られるまで
+function shakeActivity (direction: TDirection) {
   serial.writeString(`Shake in the ${direction}-axis direction.`)
 
   const dimension = getDimension(direction)
-  const preAccel = input.acceleration(dimension)
-  basic.pause(1000)
+  let activitySuccessCount = 0
 
-  // 加速度の差が一定量を超えたらインクリメント
-  if (Math.abs(preAccel - input.acceleration(dimension)) > 200) {
-    serial.writeString("OK.")
-    serial.writeValue("times", activitySuccessCount)
-    activitySuccessCount += 1
-  } else {
-    activitySuccessCount = 0
+  while (activitySuccessCount < TIMES_LIMIT) {
+    const preAccel = input.acceleration(dimension)
+    basic.pause(1000)
+
+    // 加速度の差が一定量を超えたらインクリメント
+    if (Math.abs(preAccel - input.acceleration(dimension)) > 200) {
+      serial.writeString("OK.")
+      serial.writeValue("times", activitySuccessCount)
+      activitySuccessCount += 1
+    } else {
+      activitySuccessCount = 0
+    }
   }
-  return activitySuccessCount < TIMES_LIMIT
+
+  serial.writeString('cleared.')
 }
 
-function getDimension (direction: 'x' | 'y' | 'z') {
+function getDimension (direction: TDirection) {
   switch (direction) {
     case 'x':
       return Dimension.X
