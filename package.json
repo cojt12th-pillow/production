@@ -1,7 +1,9 @@
 {
   "scripts": {
     "pxt": "pxt",
-    "build": "pxt build"
+    "build": "pxt build",
+    "deploy": "pxt deploy",
+    "test": "pxt test"
   },
   "devDependencies": {
     "pxt": "^0.5.1"

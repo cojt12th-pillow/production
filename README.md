@@ -1,5 +1,36 @@
+# Pillow
 
-> Open this page at [https://shikibu9419.github.io/production/](https://shikibu9419.github.io/production/)
+## デプロイ方法
+
+関連パッケージのインストール
+
+```shell
+$ yarn
+```
+
+Microbitへのデプロイ
+
+```shell
+# Microbitの設定 (1回目のみ)
+$ yarn run pxt target microbit && yarn run pxt install
+# プログラムのビルド
+$ yarn run build
+# 接続しているMicrobitへデプロイ
+$ yarn run deploy
+
+# 以上をまとめて行う
+$ make install
+# 2回目以降はこれでOK
+$ make start
+```
+
+ログはシリアル通信でPCへ送信します.
+
+```shell
+$ ls /dev/tty.usbmodem*
+# 該当のpathからシリアル通信をwatch
+$ sudo cu -s 115200 -l $usbmodem-path
+```
 
 ## Use as Extension
 
