@@ -1,3 +1,16 @@
+type TDirection = 'x' | 'y' | 'z'
+
+function getDimension (direction: TDirection) {
+  switch (direction) {
+    case 'x':
+      return Dimension.X
+    case 'y':
+      return Dimension.Y
+    case 'z':
+      return Dimension.Z
+  }
+}
+
 function shakeActivityX () {
   shakeActivity('x')
 }
@@ -10,27 +23,35 @@ function shakeActivityZ () {
   shakeActivity('z')
 }
 
-// 10回加速度の変化が見られるまで
+// 10秒間指定方向に振り続ける
 function shakeActivity (direction: TDirection) {
-  serial.writeString(`Shake in the ${direction}-axis direction.`)
+  const activityTime = 10
+
+  serial.writeLine(`Shake in the ${direction}-axis direction.`)
 
   const dimension = getDimension(direction)
   let successCount = 0
 
-  while (successCount < TIMES_LIMIT) {
+  // 約1秒ごとの処理
+  while (successCount < activityTime) {
     const preAccel = input.acceleration(dimension)
-    basic.pause(1000)
+
+    // 0.1秒ごとに指定方向の加速度をとり, 1秒間の最大加速値を出す
+    let maxAccel = 0
+    for (let i = 0; i < 10; i++) {
+      basic.pause(100)
+      maxAccel = Math.max(maxAccel, input.acceleration(dimension))
+    }
 
     // 加速度の差が一定量を超えたらインクリメント
-    if (Math.abs(preAccel - input.acceleration(dimension)) > 200) {
-      serial.writeString("OK.")
-      serial.writeValue("times", successCount)
+    if (Math.abs(preAccel - maxAccel) > 100) {
+      serial.writeValue('OK', successCount)
       successCount += 1
     } else {
-      serial.writeString("NO.")
+      serial.writeLine('NO.')
       successCount = 0
     }
   }
 
-  serial.writeString('cleared.')
+  serial.writeLine('cleared.')
 }

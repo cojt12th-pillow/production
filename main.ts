@@ -20,4 +20,5 @@ function stopAlerm () {
   basic.showIcon(IconNames.Happy)
 }
 
-serial.writeString('Pillow: start')
+serial.writeLine('Pillow: start.')
+serial.writeLine('PRESS A: Start any activity')
