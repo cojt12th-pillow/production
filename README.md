@@ -2,25 +2,27 @@
 
 ## デプロイ方法
 
-関連パッケージのインストール
+初期設定
 
 ```shell
+# 関連パッケージのインストール
 $ yarn
+
+# Microbitの設定 (1回目のみ)
+$ yarn run pxt target microbit && yarn run pxt install
+# or
+$ make init
 ```
 
 Microbitへのデプロイ
 
 ```shell
-# Microbitの設定 (1回目のみ)
-$ yarn run pxt target microbit && yarn run pxt install
 # プログラムのビルド
 $ yarn run build
 # 接続しているMicrobitへデプロイ
 $ yarn run deploy
 
-# 以上をまとめて行う
-$ make install
-# 2回目以降はこれでOK
+# or
 $ make start
 ```
 

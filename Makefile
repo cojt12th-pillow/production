@@ -1,12 +1,10 @@
 DEFAULT:
 
-install: init start
-
-start: build deploy
-
 init:
 	yarn run pxt target microbit
 	yarn run pxt install
+
+start: build deploy
 
 build:
 	yarn run pxt build
