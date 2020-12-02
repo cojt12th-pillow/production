@@ -8,9 +8,9 @@
     },
     "files": [
         "main.ts",
-        "activities/main.ts",
-        "activities/shake.ts",
-        "activities/utils.ts"
+        "activity.ts",
+        "utils.ts",
+        "activities/shake.ts"
     ],
     "testFiles": [
         "test.ts"
