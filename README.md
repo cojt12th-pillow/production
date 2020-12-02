@@ -1,5 +1,11 @@
 # Pillow
 
+## Contributing
+
+### 新規ファイル追加時
+
+`pxt.json`の`files`にファイルのpathを追加してください。
+
 ## デプロイ方法
 
 初期設定
