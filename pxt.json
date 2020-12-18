@@ -10,6 +10,7 @@
         "main.ts",
         "activity.ts",
         "utils.ts",
+        "voice-module.ts",
         "activities/shake.ts"
     ],
     "testFiles": [
