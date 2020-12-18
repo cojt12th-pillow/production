@@ -22,12 +22,10 @@ function shakeActivityY () {
 function shakeActivityZ () {
   shakeActivity('z')
 }
-
 // 10秒間指定方向に振り続ける
 function shakeActivity (direction: TDirection) {
+  basic.showString(direction)
   const activityTime = 10
-
-  serial.writeLine(`Shake in the ${direction}-axis direction.`)
 
   const dimension = getDimension(direction)
   let successCount = 0
@@ -44,14 +42,11 @@ function shakeActivity (direction: TDirection) {
     }
 
     // 加速度の差が一定量を超えたらインクリメント
-    if (Math.abs(preAccel - maxAccel) > 100) {
-      serial.writeValue('OK', successCount)
+    if (Math.abs(preAccel - maxAccel) > 200) {
       successCount += 1
+      basic.showString((successCount % 10).toString())
     } else {
-      serial.writeLine('NO.')
       successCount = 0
     }
   }
-
-  serial.writeLine('cleared.')
 }

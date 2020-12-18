@@ -15,10 +15,23 @@ function startAlermActivity () {
 }
 function runAlerm () {
   basic.showIcon(IconNames.Angry)
+  setLoopMode(1)
+  playVoice(1)
 }
 function stopAlerm () {
-  basic.showIcon(IconNames.Happy)
+  basic.showIcon(IconNames.Yes)
+  stopVoice()
 }
 
-serial.writeLine('Pillow: start.')
-serial.writeLine('PRESS A: Start any activity')
+serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
+setVolume(15)
+stopVoice()
+
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+  const uartValue = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine))
+  if (uartValue == 'alerm') {
+    startAlermActivity()
+  }
+})
+
+bluetooth.startUartService()
