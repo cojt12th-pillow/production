@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="ble.js" type="module"></script>
+        <title>Micro:bit UART 通信</title>
+        <style type="text/css">
+            * {
+                font-size: 3vmin;
+                padding: 3vmin;
+            }
+            body {
+                text-align: center;
+            }
+            textarea {
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Micro:bit UART 通信</h1>
+        <form>
+            <div>
+                <button type="button" id="connect">接続</button>
+                受信内容<textarea id="recieve_text"></textarea>
+            </div>
+            <div>
+                送信内容
+                <input type="text" id="send_text" value="test">
+                <button type="button" id="send" disabled>送信</button>
+            </div>
+        </form>
+    </body>
+</html>

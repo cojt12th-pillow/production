@@ -1,32 +1,3 @@
-<!DOCTYPE html>
-<meta charset="UTF-8">
-<title>Micro:bit UART 通信</title>
-<style type="text/css">
-* {
-    font-size: 3vmin;
-    padding: 3vmin;
-}
-body {
-    text-align: center;
-}
-textarea {
-    vertical-align: middle;
-}
-</style>
-<h1>Micro:bit UART 通信</h1>
-<form>
-    <div>
-        <button type="button" id="connect">接続</button>
-        受信内容<textarea id="recieve_text"></textarea>
-    </div>
-    <div>
-        送信内容
-        <input type="text" id="send_text" value="test">
-        <button type="button" id="send" disabled>送信</button>
-    </div>
-</form>
-
-<script>
 const UUID_UART_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
 const UUID_TX_CHAR_CHARACTERISTIC = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
 const UUID_RX_CHAR_CHARACTERISTIC = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
@@ -81,4 +52,3 @@ document.getElementById('connect').addEventListener('click', e => {
 document.getElementById('send').addEventListener('click', e => {
     send(document.getElementById('send_text').value)
 })
-</script>
