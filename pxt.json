@@ -4,7 +4,8 @@
     "dependencies": {
         "core": "*",
         "bluetooth": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "DS1307": "github:makecode-extensions/ds1307#v1.2.0"
     },
     "files": [
         "main.ts",
