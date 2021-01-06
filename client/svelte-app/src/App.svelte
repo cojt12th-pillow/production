@@ -65,7 +65,22 @@
   const submit = () => {
     console.log(time, weekdays)
 
+		let alertText = ''
+		if (!time) {
+			alertText += '時刻を設定してください！\n'
+		}
+		if (!weekdays.length) {
+			alertText += '曜日を設定してください！\n'
+		}
+
+		if (alertText.length) {
+      alert(alertText)
+      return
+		}
+
     sendData(`SET_ALERM:${time.replace(':', ',')},${weekdays.join(',')}`)
+
+		alert('アラームを設定しました！')
   }
 </script>
 
@@ -115,8 +130,8 @@
 
 	.weekday {
 		display: inline-block;
-		height: 2rem;
-		width: 2rem;
+		height: 2.5rem;
+		width: 2.5rem;
 		border-radius: 50%;
 		border: solid 1px#ff3e00;
 		display: flex;
@@ -131,7 +146,7 @@
 	}
 
 	.button-wrapper {
-		margin-top: 12px;
+		margin-top: 30px;
 		width: 100%;
 		text-align: center;
 
