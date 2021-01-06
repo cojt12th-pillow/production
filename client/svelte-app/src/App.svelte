@@ -1,81 +1,87 @@
 <script>
-	const UUID_UART_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
-	const UUID_TX_CHAR_CHARACTERISTIC = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
-	const UUID_RX_CHAR_CHARACTERISTIC = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+  const UUID_UART_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
+  const UUID_TX_CHAR_CHARACTERISTIC = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
+  const UUID_RX_CHAR_CHARACTERISTIC = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
 
-	let connected = false
-	let gatt = null
-	let tx = null
-	let rx = null
+  let time = null
+  let weekdays = []
+  const weekdayOptions = [
+    { value: 1, text: '月曜日' },
+    { value: 2, text: '火曜日' },
+    { value: 3, text: '水曜日' },
+    { value: 4, text: '木曜日' },
+    { value: 5, text: '金曜日' },
+    { value: 6, text: '土曜日' },
+    { value: 7, text: '日曜日' },
+  ]
 
-	const sendData = text => rx.writeValue(new TextEncoder().encode(text + '\n'))
+  let connected = false
+  let gatt = null
+  let tx = null
+  let rx = null
 
-	const connectToMicrobit = () => {
-			if (!(navigator.bluetooth && navigator.bluetooth.requestDevice)) {
-					alert('WebBluetooth に未対応のブラウザです。')
-					return
-			}
-			if (connected) {
-				gatt.disconnect()
-				connected = false
-				return
-			}
+  const sendData = text => rx?.writeValue(new TextEncoder().encode(text + '\n'))
 
-			navigator.bluetooth.requestDevice({
-					filters: [
-							{ services: [UUID_UART_SERVICE] },
-							{ namePrefix: 'BBC micro:bit' }
-					]
-			}).then(device => {
-					gatt = device.gatt
-					return gatt.connect()
-			}).then(server =>
-					server.getPrimaryService(UUID_UART_SERVICE)
-			).then(service =>
-					Promise.all([
-					service.getCharacteristic(UUID_TX_CHAR_CHARACTERISTIC),
-					service.getCharacteristic(UUID_RX_CHAR_CHARACTERISTIC)])
-			).then(characteristics => {
-					tx = characteristics[0]
-					tx.startNotifications()
-					tx.addEventListener('characteristicvaluechanged', e => {
-							const text = new TextDecoder().decode(e.target.value)
-							document.getElementById('recieve_text').value = text + document.getElementById('recieve_text').value
-					})
-					rx = characteristics[1]
-					connected = true
+  const connectToMicrobit = () => {
+    if (!(navigator.bluetooth && navigator.bluetooth.requestDevice)) {
+      alert('WebBluetooth に未対応のブラウザです。')
+      return
+    }
+    if (connected) {
+      gatt.disconnect()
+      connected = false
+      return
+    }
 
-					// send now time data
-					sendData(`SET_DATE:${new Date().toISOString()}`)
-			}).catch(function(err) {
-					alert(err)
-			})
-	}
-	const submit = () => {
-			const time = document.getElementById('time').value.replace(':', ',');
-			const weekday = document.getElementById('weekday').value;
+    navigator.bluetooth.requestDevice({
+      filters: [
+        { services: [UUID_UART_SERVICE] },
+        { namePrefix: 'BBC micro:bit' }
+      ]
+    }).then(device => {
+      gatt = device.gatt
+      return gatt.connect()
+    }).then(server =>
+      server.getPrimaryService(UUID_UART_SERVICE)
+    ).then(service =>
+      Promise.all([
+        service.getCharacteristic(UUID_TX_CHAR_CHARACTERISTIC),
+        service.getCharacteristic(UUID_RX_CHAR_CHARACTERISTIC)])
+    ).then(characteristics => {
+      tx = characteristics[0]
+      tx.startNotifications()
+      tx.addEventListener('characteristicvaluechanged', e => {
+        const text = new TextDecoder().decode(e.target.value)
+        document.getElementById('recieve_text').value = text + document.getElementById('recieve_text').value
+      })
+      rx = characteristics[1]
+      connected = true
 
-			sendData(`SET_ALERM:${time},${weekday}`);
-	}
+      // send now time data
+      sendData(`SET_DATE:${new Date().toISOString()}`)
+    }).catch(function(err) {
+      alert(err)
+    })
+  }
+  const submit = () => {
+    console.log(time, weekdays)
+
+    sendData(`SET_ALERM:${time.replace(':', ',')},${weekdays.join(',')}`)
+  }
 </script>
 
 <main>
-	<h1>アラーム設定</h1>
+	<h1>MakuraFit Adventure</h1>
 	<button type="button" on:click={connectToMicrobit}>{ connected ? '切断する' : '枕と接続する' }</button>
-	<form>
-			<div>
-					<input type="time" id="time">
-					<select name="weekday" id="weekday">
-						<option value="1">月曜日</option>
-						<option value="2">火曜日</option>
-						<option value="3">水曜日</option>
-						<option value="4">木曜日</option>
-						<option value="5">金曜日</option>
-						<option value="6">土曜日</option>
-						<option value="7">日曜日</option>
-					</select>
-					<button type="button" on:click={submit}>設定</button>
-			</div>
+	<form on:submit|preventDefault={submit}>
+		<input bind:value={time} type="time">
+		{#each weekdayOptions as option}
+			<label>
+				<input type=checkbox bind:group={weekdays} value={option.value}>
+				{option.text}
+			</label>
+		{/each}
+		<button type="submit">設定</button>
 	</form>
 </main>
 
@@ -89,14 +95,16 @@
 
 	h1 {
 		color: #ff3e00;
-		text-transform: uppercase;
 		font-size: 4em;
-		font-weight: 100;
+		font-weight: bold;
 	}
 
 	@media (min-width: 640px) {
 		main {
-			max-width: none;
+			max-width: 100%;
+		}
+		h1 {
+			font-size: 2em;
 		}
 	}
 </style>
