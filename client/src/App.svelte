@@ -117,7 +117,7 @@
 <style lang="scss">
 	main {
 		padding: 1rem;
-		width: 100%;
+		max-width: 100%;
 	}
 
 	h1 {
@@ -174,6 +174,10 @@
 			border: solid 1px#ff3e00;
 			color: #ff3e00;
 			font-weight: bold;
+			&:active {
+				background: #ff3e00;
+				color: white;
+			}
 		}
 	}
 
