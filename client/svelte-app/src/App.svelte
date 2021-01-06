@@ -15,7 +15,7 @@
     { value: 7, label: '日' },
   ]
 
-  let connected = false
+  let connected = true
   let gatt = null
   let tx = null
   let rx = null
@@ -86,23 +86,32 @@
 
 <main>
 	<h1>MakuraFit Adventure</h1>
-	<button type="button" on:click={connectToMicrobit}>{ connected ? '切断する' : '枕と接続する' }</button>
 
-	<h2>アラームを設定しよう！</h2>
-	<form on:submit|preventDefault={submit}>
-		<input bind:value={time} type="time">
-		<div class="weekday-fields">
-		{#each weekdayOptions as option}
-			<label>
-				<input type=checkbox bind:group={weekdays} value={option.value} hidden>
-				<div class="weekday" class:selected="{weekdays.includes(option.value)}">{option.label}</div>
-			</label>
-		{/each}
-		</div>
-		<div class="button-wrapper">
-			<button class="submit-button" type="submit">設定する</button>
-		</div>
-	</form>
+	{#if !connected}
+		<h2>まずはあなたの枕と接続しよう！</h2>
+	{/if}
+
+	<div class="button-wrapper">
+		<button class="connect-button" type="button" on:click={connectToMicrobit}>{ connected ? '別の枕と接続する' : '枕と接続する' }</button>
+	</div>
+
+	{#if connected}
+		<h2>アラームを設定しよう！</h2>
+		<form on:submit|preventDefault={submit}>
+			<input bind:value={time} type="time">
+			<div class="weekday-fields">
+			{#each weekdayOptions as option}
+				<label>
+					<input type=checkbox bind:group={weekdays} value={option.value} hidden>
+					<div class="weekday" class:selected="{weekdays.includes(option.value)}">{option.label}</div>
+				</label>
+			{/each}
+			</div>
+			<div class="button-wrapper">
+				<button class="submit-button" type="submit">設定する</button>
+			</div>
+		</form>
+	{/if}
 </main>
 
 <style lang="scss">
@@ -116,6 +125,15 @@
 		font-size: 4em;
 		font-weight: bold;
 		word-wrap: break-word;
+	}
+
+	.connect-button {
+		border-radius: 3rem;
+		background: white;
+		border: solid 1px black;
+		color: black;
+		font-weight: bold;
+		font-size: 1.2rem;
 	}
 
 	form {
