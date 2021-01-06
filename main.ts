@@ -1,11 +1,6 @@
-// events
 input.onButtonPressed(Button.A, function () {
   startAlermActivity()
 })
-
-serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
-setVolume(15)
-stopVoice()
 
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
   const [key, value] = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)).split(':', 1);
@@ -25,4 +20,15 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
   }
 })
 
+basic.forever(() => {
+  getAlermInfo()
+
+  // 1分待機
+  basic.pause(60000)
+})
+
 bluetooth.startUartService()
+serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
+setVolume(15)
+
+stopVoice()
