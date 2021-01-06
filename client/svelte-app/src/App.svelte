@@ -6,13 +6,13 @@
   let time = null
   let weekdays = []
   const weekdayOptions = [
-    { value: 1, text: '月曜日' },
-    { value: 2, text: '火曜日' },
-    { value: 3, text: '水曜日' },
-    { value: 4, text: '木曜日' },
-    { value: 5, text: '金曜日' },
-    { value: 6, text: '土曜日' },
-    { value: 7, text: '日曜日' },
+    { value: 1, label: '月' },
+    { value: 2, label: '火' },
+    { value: 3, label: '水' },
+    { value: 4, label: '木' },
+    { value: 5, label: '金' },
+    { value: 6, label: '土' },
+    { value: 7, label: '日' },
   ]
 
   let connected = false
@@ -20,6 +20,7 @@
   let tx = null
   let rx = null
 
+  const onReceiveData = text => console.log(text)
   const sendData = text => rx?.writeValue(new TextEncoder().encode(text + '\n'))
 
   const connectToMicrobit = () => {
@@ -50,11 +51,9 @@
     ).then(characteristics => {
       tx = characteristics[0]
       tx.startNotifications()
-      tx.addEventListener('characteristicvaluechanged', e => {
-        const text = new TextDecoder().decode(e.target.value)
-        document.getElementById('recieve_text').value = text + document.getElementById('recieve_text').value
-      })
+      tx.addEventListener('characteristicvaluechanged', e => onReceiveData(new TextDecoder().decode(e.target.value)))
       rx = characteristics[1]
+
       connected = true
 
       // send now time data
@@ -73,30 +72,76 @@
 <main>
 	<h1>MakuraFit Adventure</h1>
 	<button type="button" on:click={connectToMicrobit}>{ connected ? '切断する' : '枕と接続する' }</button>
+
+	<h2>アラームを設定しよう！</h2>
 	<form on:submit|preventDefault={submit}>
 		<input bind:value={time} type="time">
+		<div class="weekday-fields">
 		{#each weekdayOptions as option}
 			<label>
-				<input type=checkbox bind:group={weekdays} value={option.value}>
-				{option.text}
+				<input type=checkbox bind:group={weekdays} value={option.value} hidden>
+				<div class="weekday" class:selected="{weekdays.includes(option.value)}">{option.label}</div>
 			</label>
 		{/each}
-		<button type="submit">設定</button>
+		</div>
+		<div class="button-wrapper">
+			<button class="submit-button" type="submit">設定する</button>
+		</div>
 	</form>
 </main>
 
-<style>
+<style lang="scss">
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
+		padding: 1rem;
+		width: 100%;
 	}
 
 	h1 {
 		color: #ff3e00;
 		font-size: 4em;
 		font-weight: bold;
+		word-wrap: break-word;
+	}
+
+	form {
+		width: 100%;
+	}
+
+	.weekday-fields {
+		margin-top: 8px;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.weekday {
+		display: inline-block;
+		height: 2rem;
+		width: 2rem;
+		border-radius: 50%;
+		border: solid 1px#ff3e00;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: bold;
+
+		&.selected {
+			background: #ff3e00;
+			color: white;
+		}
+	}
+
+	.button-wrapper {
+		margin-top: 12px;
+		width: 100%;
+		text-align: center;
+
+		.submit-button {
+			border-radius: 2rem;
+			background: white;
+			border: solid 1px#ff3e00;
+			color: #ff3e00;
+			font-weight: bold;
+		}
 	}
 
 	@media (min-width: 640px) {
@@ -104,7 +149,7 @@
 			max-width: 100%;
 		}
 		h1 {
-			font-size: 2em;
+			font-size: 1em;
 		}
 	}
 </style>
