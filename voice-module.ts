@@ -1,5 +1,9 @@
 const trackCategory = {
-  alerm: 0
+  start: 0,
+  shake: [1, 2, 3],
+  cheer: [4, 5],
+  counter: [6, 7, 8, 9, 10],
+  finish: 11,
 }
 
 function playVoice(track: number) {
@@ -12,10 +16,6 @@ function pauseVoice() {
 
 function stopVoice() {
   writeBuffer([0xAA, 0x04, 0x00, 0xAE])
-}
-
-function playVoiceByCategory(category: keyof typeof trackCategory) {
-  playVoice(trackCategory[category])
 }
 
 function setVolume(volume: number) {
