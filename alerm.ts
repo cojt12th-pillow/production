@@ -1,23 +1,26 @@
 let todayAlermFinished = false
+// e.g. 12:00 on Mon / Tue / Wed
+const hour = 12
+const minute = 0
+const weekdays = [1, 2, 3]
+
+const activityFunctions: (() => void)[] = [shakeActivityX, shakeActivityY, shakeActivityZ]
 
 // alerms
 function startAlermActivity () {
-  // 音を鳴らしたりする
-  runAlerm()
-
-  // TODO: ユーザが起きたことを確認してからアクティビティを始める
-
   // アクティビティをランダムに選択
-  const activity = getRandomActivity()
-  activity()
+  setLoopMode(1)
+  playVoice(trackCategory.start)
+
+  // 再生時間だけ待機
+
+  const number = getRandomInt(3)
+  activityFunctions[number]();
+
   // アラームを止める
   stopAlerm()
-}
 
-function runAlerm () {
-  basic.showIcon(IconNames.Angry)
-  setLoopMode(1)
-  playVoice(1)
+  playVoice(trackCategory.finish)
 }
 
 function stopAlerm () {
@@ -26,13 +29,15 @@ function stopAlerm () {
   todayAlermFinished = true
 }
 
-function getAlermInfo() {
-  const currentInfo = [DS1307.getHour(), DS1307.getMinute(), DS1307.getWeekday()];
-  // e.g. 12:00 on Mon / Tue / Wed
-  const settings = [12, 0, 1, 2, 3]
+function getRandomInt(max: number): number {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
-  // 0時0分にリセット
-  if (currentInfo[0] === 0 && currentInfo[0] === 0) {
+function getAlermInfo() {
+  const [currentHour, currentMin] = [DS1307.getHour(), DS1307.getMinute()];
+
+  // 設定した曜日の0時0分になったらリセット
+  if (currentHour === 0 && currentMin === 0 && weekdays.slice(2).includes(DS1307.getWeekday())) {
     todayAlermFinished = false
   }
 
@@ -41,15 +46,13 @@ function getAlermInfo() {
   }
 
   // 曜日と時刻が該当したらアラームを起動
-  if (settings.slice(2).includes(currentInfo[2])) {
-    if (settings[0] === currentInfo[0] && settings[1] === currentInfo[1]) {
-      startAlermActivity()
-    }
+  if (hour === currentHour && minute === currentMin) {
+    startAlermActivity()
   }
 }
 
 function setAlermTime(value: string) {
-  const [hours, minutes, ...weekdays] = value.split(',').map(v => parseInt(v));
+  const [configHour, ConfigMinute, ...configWeekdays] = value.split(',').map(v => parseInt(v));
 
   // TODO: set alerm time
 }

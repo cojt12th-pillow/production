@@ -23,8 +23,8 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
 basic.forever(() => {
   getAlermInfo()
 
-  // 1分待機
-  basic.pause(60000)
+  // 10秒ごとにアラームチェック
+  basic.pause(10 * 1000)
 })
 
 bluetooth.startUartService()
