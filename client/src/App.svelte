@@ -15,7 +15,7 @@
     { value: 7, label: '日' },
   ]
 
-  let connected = true
+  let connected = false
   let gatt = null
   let tx = null
   let rx = null
@@ -117,7 +117,7 @@
 <style lang="scss">
 	main {
 		padding: 1rem;
-		max-width: 100%;
+		max-width: 640px;
 	}
 
 	h1 {
@@ -181,12 +181,12 @@
 		}
 	}
 
-	@media (min-width: 640px) {
+	@media (max-width: 640px) {
 		main {
 			max-width: 100%;
 		}
 		h1 {
-			font-size: 1em;
+			font-size: 3em;
 		}
 	}
 </style>
