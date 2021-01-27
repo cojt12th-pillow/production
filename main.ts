@@ -21,15 +21,26 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
   }
 })
 
-basic.forever(() => {
+input.onButtonPressed(Button.A, function () {
+  // startAlermActivity()
   getAlermInfo()
+})
+
+input.onButtonPressed(Button.B, function () {
+  playVoice(1)
+})
+
+// bluetooth.startUartService()
+// serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
+// setVolume(15)
+
+// stopVoice()
+
+serial.writeLine('forever');
+basic.forever(() => {
+  serial.writeLine('hoge')
+  // getAlermInfo()
 
   // 10秒ごとにアラームチェック
   basic.pause(10 * 1000)
 })
-
-bluetooth.startUartService()
-serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
-setVolume(15)
-
-stopVoice()

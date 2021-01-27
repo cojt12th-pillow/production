@@ -12,32 +12,35 @@ function getDimension (direction: TDirection) {
 }
 
 function shakeActivityX () {
-  playVoice(trackCategory.shake[0])
-  // 再生時間だけ待機
   shake10Times('x', 0)
 }
 
 function shakeActivityY () {
-  playVoice(trackCategory.shake[1])
-  // 再生時間だけ待機
   shake10Times('y', 1)
 }
 
 function shakeActivityZ () {
-  playVoice(trackCategory.shake[2])
-  // 再生時間だけ待機
   shake10Times('z', 2)
 }
 
 // 10秒間指定方向に振り続ける
 function shake10Times (direction: TDirection, shakeIndex: number) {
+  playVoice(trackCategory.shake[shakeIndex])
+  // 再生時間だけ待機
+
+  basic.showString(direction)
+
   let successCount = 0
   let notShakingTime = 0
 
   // 約1秒ごとの処理
   while (successCount < 10) {
+    basic.showNumber(successCount);
+
     if (shakeActivity(direction))
       successCount++;
+    else
+      successCount = 0;
 
     if (successCount === 0) {
       notShakingTime++;
@@ -54,7 +57,7 @@ function shake10Times (direction: TDirection, shakeIndex: number) {
       playVoice(trackCategory.cheer[getRandomInt(1)])
 
     // カウントダウン
-    if (successCount > 5)
+    if (successCount > 7)
       playVoice(trackCategory.counter[10 - successCount])
   }
 }
