@@ -5,6 +5,7 @@ input.onButtonPressed(Button.A, function () {
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
   const [key, value] = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)).split(':', 1);
 
+  serial.writeLine(`bluetooth data received: { ${key}: ${value} }`)
   switch (key) {
     case 'RUN_ALERM':
       startAlermActivity();

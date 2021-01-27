@@ -9,6 +9,6 @@
     "pxt": "^0.5.1"
   },
   "dependencies": {
-    "pxt-microbit": "^3.0.61"
+    "pxt-microbit": "^3.1.47"
   }
 }

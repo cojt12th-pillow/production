@@ -1,8 +1,10 @@
 let todayAlermFinished = false
 // e.g. 12:00 on Mon / Tue / Wed
-const hour = 12
-const minute = 0
-const weekdays = [1, 2, 3]
+let hour = EEPROM.getAnyEEP(EEPROM.DS1307_REG_RAM1);
+let minute = EEPROM.getAnyEEP(EEPROM.DS1307_REG_RAM2);
+let weekdays = EEPROM.getDayEEP();
+
+serial.writeLine(`INIT: ${hour}:${minute} in (${weekdays.join(',')})`)
 
 const activityFunctions: (() => void)[] = [shakeActivityX, shakeActivityY, shakeActivityZ]
 
@@ -26,7 +28,6 @@ function startAlermActivity () {
 function stopAlerm () {
   basic.showIcon(IconNames.Yes)
   stopVoice()
-  todayAlermFinished = true
 }
 
 function getRandomInt(max: number): number {
@@ -34,10 +35,15 @@ function getRandomInt(max: number): number {
 }
 
 function getAlermInfo() {
-  const [currentHour, currentMin] = [DS1307.getHour(), DS1307.getMinute()];
+  serial.writeLine('get alerm info')
+  const currentHour = DS1307.getHour();
+  const currentMin = DS1307.getMinute();
+
+  serial.writeLine(`now: ${currentHour}:${currentMin}`)
 
   // 設定した曜日の0時0分になったらリセット
-  if (currentHour === 0 && currentMin === 0 && weekdays.slice(2).includes(DS1307.getWeekday())) {
+  const weekday = DS1307.getWeekday().toString();
+  if (currentHour === 0 && currentMin === 0 && weekdays.slice(2).some(w => w === weekday)) {
     todayAlermFinished = false
   }
 
@@ -47,18 +53,28 @@ function getAlermInfo() {
 
   // 曜日と時刻が該当したらアラームを起動
   if (hour === currentHour && minute === currentMin) {
-    startAlermActivity()
+    todayAlermFinished = true
+    // startAlermActivity()
   }
 }
 
 function setAlermTime(value: string) {
-  const [configHour, ConfigMinute, ...configWeekdays] = value.split(',').map(v => parseInt(v));
+  const values = value.split(',');
 
-  // TODO: set alerm time
+  hour = parseInt(values[0]);
+  minute = parseInt(values[1]);
+  weekdays = values.slice(2);
+
+  EEPROM.setAnyEEP(EEPROM.DS1307_REG_RAM1, hour);
+  EEPROM.setAnyEEP(EEPROM.DS1307_REG_RAM2, minute);
+  EEPROM.setDayEEP(weekdays);
+
+  serial.writeLine(`data setted: [${values.join(', ')}]`)
 }
 
 function setRTCDate(value: string) {
-  const date = new Date(value);
+  const values = value.split(',').map(v => parseInt(v));
 
-  DS1307.DateTime(date.getUTCFullYear(), date.getMonth(), date.getUTCDate(), date.getDay(), date.getHours(), date.getMinutes(), date.getUTCSeconds());
+  // DS1307.DateTime(date.getUTCFullYear(), date.getMonth(), date.getUTCDate(), date.getDay(), date.getHours(), date.getMinutes(), date.getUTCSeconds());
+  DS1307.DateTime(values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
 }
