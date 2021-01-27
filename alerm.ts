@@ -63,7 +63,7 @@ function setAlermTime(value: string) {
 
   hour = parseInt(values[0]);
   minute = parseInt(values[1]);
-  weekdays = values.slice(2);
+  weekdays = values[2].split('');
 
   EEPROM.setAnyEEP(EEPROM.DS1307_REG_RAM1, hour);
   EEPROM.setAnyEEP(EEPROM.DS1307_REG_RAM2, minute);
@@ -75,6 +75,5 @@ function setAlermTime(value: string) {
 function setRTCDate(value: string) {
   const values = value.split(',').map(v => parseInt(v));
 
-  // DS1307.DateTime(date.getUTCFullYear(), date.getMonth(), date.getUTCDate(), date.getDay(), date.getHours(), date.getMinutes(), date.getUTCSeconds());
-  DS1307.DateTime(values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
+  DS1307.DateTime(2021, values[0], values[1], values[2], values[3], values[4], values[5]);
 }

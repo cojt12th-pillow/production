@@ -1,19 +1,17 @@
-input.onButtonPressed(Button.A, function () {
-  startAlermActivity()
-})
-
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-  const [key, value] = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)).split(':', 1);
+  const data = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine)).split(':');
+  const key = data[0];
+  const value = data[1];
 
-  serial.writeLine(`bluetooth data received: { ${key}: ${value} }`)
+  serial.writeLine(`bluetooth data received ${key}: ${value}`)
   switch (key) {
-    case 'RUN_ALERM':
-      startAlermActivity();
-      break;
-    case 'SET_ALERM':
+    // case 'RUN_ALERM':
+    //   startAlermActivity();
+    //   break;
+    case 'ALERM':
       setAlermTime(value);
       break;
-    case 'SET_DATE':
+    case 'D':
       setRTCDate(value);
       break;
     default:
@@ -22,25 +20,23 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
 })
 
 input.onButtonPressed(Button.A, function () {
-  // startAlermActivity()
-  getAlermInfo()
+  startAlermActivity()
 })
 
 input.onButtonPressed(Button.B, function () {
   playVoice(1)
 })
 
-// bluetooth.startUartService()
+bluetooth.startUartService()
+bluetooth.onBluetoothConnected(() => serial.writeLine('connected'))
 // serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
 // setVolume(15)
 
 // stopVoice()
 
-serial.writeLine('forever');
-basic.forever(() => {
-  serial.writeLine('hoge')
-  // getAlermInfo()
+// basic.forever(() => {
+//   // getAlermInfo()
 
-  // 10秒ごとにアラームチェック
-  basic.pause(10 * 1000)
-})
+//   // 10秒ごとにアラームチェック
+//   basic.pause(10 * 1000)
+// })

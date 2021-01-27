@@ -6,13 +6,13 @@
   let time = null
   let weekdays = []
   const weekdayOptions = [
-    { value: 1, label: '月' },
-    { value: 2, label: '火' },
-    { value: 3, label: '水' },
-    { value: 4, label: '木' },
-    { value: 5, label: '金' },
-    { value: 6, label: '土' },
-    { value: 7, label: '日' },
+    { value: 1, label: '日' },
+    { value: 2, label: '月' },
+    { value: 3, label: '火' },
+    { value: 4, label: '水' },
+    { value: 5, label: '木' },
+    { value: 6, label: '金' },
+    { value: 7, label: '土' },
   ]
 
   let connected = false
@@ -21,7 +21,10 @@
   let rx = null
 
   const onReceiveData = text => console.log(text)
-  const sendData = text => rx?.writeValue(new TextEncoder().encode(text + '\n'))
+  const sendData = text => {
+		console.log('send:', text)
+		rx?.writeValue(new TextEncoder().encode(text + '\n'))
+	}
 
   const connectToMicrobit = () => {
     if (!(navigator.bluetooth && navigator.bluetooth.requestDevice)) {
@@ -57,7 +60,8 @@
       connected = true
 
       // send now time data
-      sendData(`SET_DATE:${new Date().toISOString()}`)
+			const date = new Date()
+      sendData(`D:${date.getMonth()},${date.getUTCDate()},${date.getDay()},${date.getHours()},${date.getMinutes()},${date.getUTCSeconds()}`)
     }).catch(function(err) {
       alert(err)
     })
@@ -78,7 +82,9 @@
       return
 		}
 
-    sendData(`SET_ALERM:${time.replace(':', ',')},${weekdays.join(',')}`)
+		const weekdayData = weekdayOptions.map((option) => weekdays.includes(option.value) ? 1 : 0);
+
+    sendData(`ALERM:${time.replace(':', ',')},${weekdayData.join('')}`)
 
 		alert('アラームを設定しました！')
   }
