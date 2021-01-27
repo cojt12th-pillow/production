@@ -9,7 +9,6 @@
     },
     "files": [
         "main.ts",
-        "utils.ts",
         "eep.ts",
         "alerm.ts",
         "voice-module.ts",
