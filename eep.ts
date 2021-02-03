@@ -8,14 +8,14 @@ namespace EEPROM {
     let DS1307_REG_MONTH = 5
     let DS1307_REG_YEAR = 6
     let DS1307_REG_CTRL = 7
-    export let DS1307_REG_RAM1 = 8
-    export let DS1307_REG_RAM2 = 9
-    export let DS1307_REG_RAM3 = 10
-    export let DS1307_REG_RAM4 = 11
-    export let DS1307_REG_RAM5 = 12
-    export let DS1307_REG_RAM6 = 13
-    export let DS1307_REG_RAM7 = 14
-    export let DS1307_REG_RAM8 = 15
+    export let DS1307_REG_RAM1 = 18
+    export let DS1307_REG_RAM2 = 19
+    export let DS1307_REG_RAM3 = 20
+    export let DS1307_REG_RAM4 = 21
+    export let DS1307_REG_RAM5 = 22
+    export let DS1307_REG_RAM6 = 23
+    export let DS1307_REG_RAM7 = 24
+    export let DS1307_REG_RAM8 = 25
 
 
     function setReg(reg: number, dat: number): void {
