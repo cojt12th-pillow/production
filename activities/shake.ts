@@ -25,40 +25,48 @@ function shakeActivityZ () {
 
 // 10秒間指定方向に振り続ける
 function shake10Times (direction: TDirection, shakeIndex: number) {
-  playVoice(trackCategory.shake[shakeIndex])
-  // 再生時間だけ待機
-
   basic.showString(direction)
 
+  playVoice(trackCategory.shake[shakeIndex])
+  // 再生時間だけ待機
+  basic.pause(5 * 1000)
+
   let successCount = 0
+  let cheerCount = 0
   let notShakingTime = 0
 
   // 約1秒ごとの処理
   while (successCount < 10) {
     basic.showNumber(successCount);
 
-    if (shakeActivity(direction))
+    if (shakeActivity('x'))
       successCount++;
-    else
-      successCount = 0;
+    if (shakeActivity('y'))
+      successCount++;
+    if (shakeActivity('z'))
+      successCount++;
 
-    if (successCount === 0) {
+    if (!successCount) {
       notShakingTime++;
       // 5秒何もなかったら再生
-      if (notShakingTime > 5)
+      if (notShakingTime > 5) {
         playVoice(trackCategory.shake[shakeIndex])
-      notShakingTime = 0
+        notShakingTime = 0
+      }
     } else {
       notShakingTime = 0
     }
 
-    // その調子!
-    if (1 < successCount && successCount < 5)
-      playVoice(trackCategory.cheer[getRandomInt(1)])
+    // その調子! (3回に1回)
+    if (1 < successCount && successCount < 5) {
+      if (!cheerCount)
+        playVoice(trackCategory.cheer[2])
+      cheerCount = (cheerCount + 1) % 3
+    }
 
     // カウントダウン
-    if (successCount > 7)
-      playVoice(trackCategory.counter[10 - successCount])
+    // if (successCount > 7)
+    //   playVoice(trackCategory.counter[10 - successCount])
   }
 }
 
@@ -68,7 +76,7 @@ function shakeActivity (direction: TDirection): boolean {
 
   // 0.1秒ごとに指定方向の加速度をとり, 1秒間の最大加速値を出す
   let maxAccel = 0
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     basic.pause(100)
     maxAccel = Math.max(maxAccel, input.acceleration(dimension))
   }
