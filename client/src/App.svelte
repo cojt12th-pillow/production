@@ -15,7 +15,7 @@
     { value: 7, label: '土' },
   ]
 
-  let connected = false
+  let connected = true
   let gatt = null
   let tx = null
   let rx = null
@@ -61,7 +61,7 @@
 
       // send now time data
 			const date = new Date()
-      sendData(`D:${date.getMonth()},${date.getUTCDate()},${date.getDay()},${date.getHours()},${date.getMinutes()},${date.getUTCSeconds()}`)
+      // sendData(`D:${date.getMonth()},${date.getUTCDate()},${date.getDay()},${date.getHours()},${date.getMinutes()},${date.getUTCSeconds()}`)
     }).catch(function(err) {
       alert(err)
     })
