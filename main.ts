@@ -5,9 +5,13 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
 
   serial.writeLine(`bluetooth data received ${key}: ${value}`)
   switch (key) {
-    // case 'RUN_ALERM':
-    //   startAlermActivity();
-    //   break;
+    case 'RUN_ALERM':
+      startAlermActivity();
+      break;
+    case 'STOP':
+      pins.digitalWritePin(DigitalPin.P11, 0)
+      pins.digitalWritePin(DigitalPin.P12, 1)
+      break;
     case 'ALERM':
       setAlermTime(value);
       break;
@@ -19,24 +23,28 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () 
   }
 })
 
+pins.digitalWritePin(DigitalPin.P11, 0)
+pins.digitalWritePin(DigitalPin.P12, 1)
+
 input.onButtonPressed(Button.A, function () {
+  basic.showString('A')
   startAlermActivity()
 })
 
 input.onButtonPressed(Button.B, function () {
-  playVoice(1)
+  basic.showString('B')
+  pins.digitalWritePin(DigitalPin.P11, 1)
+  pins.digitalWritePin(DigitalPin.P12, 0)
 })
 
 bluetooth.startUartService()
 bluetooth.onBluetoothConnected(() => serial.writeLine('connected'))
-// serial.redirect(SerialPin.P1, SerialPin.P0, BaudRate.BaudRate9600)
-// setVolume(15)
+serial.redirect(SerialPin.P8, SerialPin.P0, BaudRate.BaudRate9600)
+setVolume(30)
+stopVoice()
 
-// stopVoice()
-
-// basic.forever(() => {
-//   // getAlermInfo()
-
-//   // 10秒ごとにアラームチェック
-//   basic.pause(10 * 1000)
-// })
+basic.forever(() => {
+  // 5秒ごとにアラームチェック
+  basic.pause(5 * 1000)
+  // getAlermInfo()
+})

@@ -1,13 +1,13 @@
 const trackCategory = {
   start: 1,
-  shake: [2, 3, 4],
-  cheer: [5, 6],
-  counter: [7, 8, 9],
-  finish: 10,
+  shake: [3, 5, 7],
+  cheer: [9, 11, 13],
+  finish: 15,
 }
 
 function playVoice(track: number) {
-  stopVoice();
+  basic.showNumber(track)
+  setLoopMode(2)
   writeBuffer([0xAA, 0x07, 0x02, 0x00, track, track + 0xB3])
 }
 
